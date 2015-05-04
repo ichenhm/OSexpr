@@ -2,7 +2,9 @@
 #include <sys/file.h>
 #include <unistd.h>
 #include <stdio.h>
-#define  exit _exit
+#include <sys/wait.h>
+#include <sys/elf.h>
+#include <stdlib.h>
 
 char r_buf[4];
 char w_buf[4];
