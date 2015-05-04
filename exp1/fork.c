@@ -3,9 +3,12 @@
 #include <unistd.h>
 #include <stdio.h>
 #define  exit _exit
+#include <sys/wait.h>
+#include <stdlib.h>
 
-char r_buf[4];
-char w_buf[4];
+
+char r_buf[6];
+char w_buf[6];
 int pipe_fd[2];
 pid_t pid1,pid2,pid3,pid4;
 
