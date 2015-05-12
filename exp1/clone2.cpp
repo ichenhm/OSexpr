@@ -1,5 +1,5 @@
-
 #define _GNU_SOURCE
+
 #include <sched.h>
 #include <pthread.h>
 #include <stdio.h>
@@ -33,12 +33,12 @@ int main(int argc,char **args)
 		///create four threads.
 		arg=i;
 		stack = (char *) malloc(4096);
-		retval = clone((void *)producer,&(stack[4095]),clone_flag,(void*)&arg);
+		retval = clone(producer,&(stack[4095]),clone_flag,(void*)&arg);
 		stack = (char *) malloc(4096);
-		retval = clone((void *)consumer,&(stack[4095]),clone_flag,(void*)&arg);
-		sleep(1);
+		retval = clone(consumer,&(stack[4095]),clone_flag,(void*)&arg);
+		//sleep(1);
 	}
-	sleep(60);
+	sleep(61);
 	exit(1);
 }
 

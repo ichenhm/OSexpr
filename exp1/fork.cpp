@@ -3,7 +3,8 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <sys/wait.h>
-#include <sys/elf.h>
+#include <string.h>
+//#include <sys/elf.h>
 #include <stdlib.h>
 
 char r_buf[4];
