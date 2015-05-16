@@ -20,7 +20,7 @@ typedef struct{
 
 void proc(int *args);
 void *idle();
-void select_proc();
+int  select_proc();
 
 int task_num=0;
 int idle_num=0;
@@ -53,9 +53,9 @@ int main(int argc,char *argv[])
 	{
 		puts("Please input task id,followed by Ci and Ti:\n");
 		getchar();
-		scanf("%c,%d,%d,",&tasks[i].task_id,&tasks[i].ci,&task[i].ti);
-		tasks[i].ci_left=task[i].task_ci;
-		tasks[i].ti_left=task[i].task_ti;
+		scanf("%c,%d,%d,",&tasks[i].task_id,&tasks[i].ci,&tasks[i].ti);
+		tasks[i].ci_left=tasks[i].ci;
+		tasks[i].ti_left=tasks[i].ti;
 		tasks[i].flag=2;
 		tasks[i].arg=i;
 		tasks[i].call_num=1;
@@ -88,13 +88,13 @@ int main(int argc,char *argv[])
 		int j;
 		if((curr_proc=select_proc(alg))!=-1)
 		{
-			pthread_mutex_unlock(&proc_wait[curr_Proc]);//wake up
+			pthread_mutex_unlock(&proc_wait[curr_proc]);//wake up
 			pthread_mutex_lock(&main_wait);//main thread wait
 		}
 		else
 		{//no thread to schedule
 			pthread_mutex_unlock(&idle_wait);
-			pthread_lock(&main_wait);
+			pthread_mutex_lock(&main_wait);
 		}
 		for(j=0;j<task_num;j++)
 		{
@@ -113,7 +113,7 @@ int main(int argc,char *argv[])
 }
 void proc(int *args)
 {
-	while(tasks[*rags].ci_left > 0)
+	while(tasks[*args].ci_left > 0)
 	{
 		pthread_mutex_lock(&proc_wait[*args]);
 		if(idle_num!=0)
@@ -156,7 +156,7 @@ int select_proc(int alg)
 		return curr_proc;
 	for(j=0;j<task_num;j++)
 	{
-		if(task[j].flag==2)
+		if(tasks[j].flag==2)
 		{
 			switch(alg)
 			{
