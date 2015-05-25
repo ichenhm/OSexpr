@@ -27,7 +27,7 @@ int idle_num=0;
 int alg;//algorithm 1 for EDF 2 for RMS
 int curr_proc=-1;
 int demo_time=100;// show time 
-
+char chrs[100];
 Task * tasks;
 pthread_mutex_t proc_wait[100];
 pthread_mutex_t main_wait,idle_wait;
@@ -52,8 +52,8 @@ int main(int argc,char *argv[])
 	for(i=0;i<task_num;i++)
 	{
 		puts("Please input task id,followed by Ci and Ti:\n");
-		getchar();
-		scanf("%c,%d,%d,",&tasks[i].task_id,&tasks[i].ci,&tasks[i].ti);
+		scanf("%s%d%d",chrs,&tasks[i].ci,&tasks[i].ti);
+		tasks[i].task_id=chrs[0];
 		tasks[i].ci_left=tasks[i].ci;
 		tasks[i].ti_left=tasks[i].ti;
 		tasks[i].flag=2;
@@ -63,7 +63,6 @@ int main(int argc,char *argv[])
 
 	}
 	puts("Please choose an algorithm ,1 for EDF ,2 for RMS");
-	getchar();
 	scanf("%d",&alg);
 	puts("Please input demo time");
 	scanf("%d",&demo_time);
