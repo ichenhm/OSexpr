@@ -1,5 +1,7 @@
 
 # this is a test file.
-out : fork.o
-	gcc -o fork.o
+fork : fork.c
+	gcc fork.c  -o fork
+clone: clone.c 
+	gcc -lpthread clone.c -o clone
 	

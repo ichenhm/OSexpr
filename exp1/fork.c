@@ -5,7 +5,7 @@
 #define  exit _exit
 #include <sys/wait.h>
 #include <stdlib.h>
-
+#include <string.h>
 
 char r_buf[6];
 char w_buf[6];

@@ -1,0 +1,33 @@
+"set tabspace is four blanks
+set ts=4
+"show line number
+set number
+"do not use compatible mode
+set nocompatible
+"auto indent 
+set autoindent
+"when overwrite the file ,back up the old one
+"if has("vms")
+"	set nobackup
+"else
+"	set backup
+"endif
+"set history cmd cache or ...
+set history=49
+"show cursor position at right buttom.
+set ruler
+"show cmd
+set showcmd
+"search highlight
+set hlsearch
+"no wrap
+set nowrap
+"side scroll
+set sidescroll=10
+"set back to front
+set  whichwrap=b,s,<,>,[,]
+"show tab char
+"set list
+"set cmd height
+set cmdheight =3
+
