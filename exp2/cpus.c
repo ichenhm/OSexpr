@@ -8,11 +8,11 @@
 typedef struct{
 	char task_id;
 	int call_num;
-	int ci;
-	int ti;
+	int ci;/// the time needs to run completely one time.
+	int ti;/// one seg-time must run one time.
 	int ci_left;
 	int ti_left;
-	int flag;
+	int flag; /// 0 for not active, 2 for active
 	int arg;
 	pthread_t th;
 
@@ -103,33 +103,34 @@ int main(int argc,char *argv[])
 				tasks[j].ti_left=tasks[j].ti;
 				tasks[j].ci_left=tasks[j].ci;
 				pthread_create(&tasks[j].th,NULL,(void*)proc,&tasks[j].arg);
-				tasks[j].flag=2;
+				tasks[j].flag=2;/// set active
 			}
 		}
 	}
 	puts("");
-	sleep(10);
+	sleep(2);/// no need to wait so long.
 }
 void proc(int *args)
 {
 	while(tasks[*args].ci_left > 0)
 	{
-		pthread_mutex_lock(&proc_wait[*args]);
+		pthread_mutex_lock(&proc_wait[*args]); ///ensure execute just one time circle 
+		/// and then sleep here ,to wait for  being chosen by main-proc 
 		if(idle_num!=0)
 		{
 			printf("idle(%d)",idle_num);
 			idle_num=0;
 		}
-		printf("%c%d",tasks[*args].task_id,tasks[*args].call_num);
-		tasks[*args].ci_left--;
+		printf("%c%d",tasks[*args].task_id,tasks[*args].call_num);///print a run recored.
+		tasks[*args].ci_left--;///dec one time
 		if(tasks[*args].ci_left==0)
 		{
-			printf("(%d)",tasks[*args].ci);
-			tasks[*args].flag=0;
-			tasks[*args].call_num++;
+			printf("(%d)",tasks[*args].ci);/// print all run-times
+			tasks[*args].flag=0;/// run out of time ,so set not active.
+			tasks[*args].call_num++;/// run-time increase.
 
 		}
-		pthread_mutex_unlock(&main_wait);///wake up
+		pthread_mutex_unlock(&main_wait);///wake up  main-proc
 	}
 }
 
@@ -138,10 +139,10 @@ void * idle()
 	
 	while(1)
 	{
-		pthread_mutex_lock(&idle_wait);
+		pthread_mutex_lock(&idle_wait);///same reason with proc.
 		printf("->");
 		idle_num++;
-		pthread_mutex_unlock(&main_wait);
+		pthread_mutex_unlock(&main_wait);/// like proc_wait above.
 	}
 }
 
@@ -151,23 +152,23 @@ int select_proc(int alg)
 	int temp1,temp2;
 	temp1=100000;
 	temp2=-1;
-	if((alg==2)&&(curr_proc!=-1)&&(tasks[curr_proc].flag!=0))
+	if((alg==2)&&(curr_proc!=-1)&&(tasks[curr_proc].flag!=0))/// can't choose another ,while one is running.
 		return curr_proc;
 	for(j=0;j<task_num;j++)
 	{
-		if(tasks[j].flag==2)
+if(tasks[j].flag==2)///choose those are active.
 		{
 			switch(alg)
 			{
 				case 1:/// EDF
-					if(temp1>tasks[j].ti_left)
+					if(temp1>tasks[j].ti_left)///find a proc whose left-time is shortest.
 					{
 						temp1=tasks[j].ti_left;
 						temp2=j;
 					}
 					break;
 				case 2:///RMS
-					if(temp1>tasks[j].ti)
+					if(temp1>tasks[j].ti)///find a proc who is most frequent now  relatively 
 					{
 						temp1=tasks[j].ti;
 						temp2=j;
