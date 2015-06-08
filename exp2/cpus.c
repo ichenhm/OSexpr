@@ -108,7 +108,7 @@ int main(int argc,char *argv[])
 		}
 	}
 	puts("");
-	sleep(2);/// no need to wait so long.
+	sleep(1);/// no need to wait so long.
 }
 void proc(int *args)
 {
@@ -182,36 +182,4 @@ if(tasks[j].flag==2)///choose those are active.
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	
 

@@ -1,11 +1,11 @@
 #define RECORDLEN 32
-typedef struct{
+typedef struct jtRecord{
 	int key;
 	char other[RECORDLEN-sizeof(int)];
-};
+}jtRecord;
 
 #ifdef HAVE_CONFIG_H
-#include<config.h>
+#include<config.h>///
 #endif
 
 

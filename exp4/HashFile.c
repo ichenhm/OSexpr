@@ -1,8 +1,8 @@
-#include < unstd.h>
+#include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include "HashFile.h"
+#include "HashFile.h"//
 
 int hashfile_creat(const char * fileName,mode_t mode,int reclen,int total_rec_num)
 {
@@ -23,9 +23,9 @@ int hashfile_creat(const char * fileName,mode_t mode,int reclen,int total_rec_nu
 		//lseek(fd,sizeof(HashFileHeader),SEEK_SET);
 		if(rtn!=-1)
 		{
-			buf=(char * ) malloc(reclen + sizeof(CFTag))*tatol_rec_num;
-			memeset(buf,0,(reclen+sizeof(CFTag))*tatol_rec_num);
-			rtn=write(fd,buf,(reclen+_sizeof(CFTag))tatol_rec_num);
+			buf=(char * ) malloc((reclen + sizeof(CFTag))*total_rec_num);
+			memset(buf,0,(reclen+sizeof(CFTag))*total_rec_num);
+			rtn=write(fd,buf,(reclen+sizeof(CFTag))*total_rec_num);
 			free(buf);
 		}
 		close(fd);
@@ -46,14 +46,14 @@ int hashfile_open(const char * fileName,int flags,mode_t mode)
 	if(read(fd,&hfh,sizeof(HashFileHeader))!=-1)
 	{
 		lseek(fd,0,SEEK_SET);
-		if(hgh.sig==31415926)
+		if(hfh.sig==31415926)
 		{
 			return fd;
 		}
 		else
 			return -1;
 	}
-	else 
+	else
 		return -1;
 }
 
@@ -62,7 +62,7 @@ int hashfile_close(int fd)
 	return close(fd);
 }
 
-int hashfile_read(int fd,int keyoffset int keylen,void * buf)
+int hashfile_read(int fd,int keyoffset ,int keylen,void * buf)
 {
 	HashFileHeader hfh;
 	readHashFileHeader(fd,&hfh);
@@ -98,7 +98,7 @@ int hashfile_delrec(int fd,int keyoffset,int keylen,void * buf)
 		readHashFileHeader(fd,&hfh);
 		int addr = hash(keyoffset,keylen,buf,hfh.total_rec_num);
 		offset=sizeof(HashFileHeader)+addr*(hfh.reclen+sizeof(CFTag));
-		if(lseek(fd,offset,SEEK_SET==-1)
+		if(lseek(fd,offset,SEEK_SET==-1))
 			return -1;
 		read(fd,&tag,sizeof(CFTag));
 		tag.collision--;// conflect cnt -1
@@ -115,7 +115,7 @@ int hashfile_delrec(int fd,int keyoffset,int keylen,void * buf)
 	}
 
 }
-	
+
 int hashfile_findrec(int fd,int keyoffset ,int keylen,void *buf)
 {
 	HashFileHeader hfh;
@@ -125,14 +125,14 @@ int hashfile_findrec(int fd,int keyoffset ,int keylen,void *buf)
 	if(lseek(fd,offset,SEEK_SET)==-1)
 		return -1;
 	CFTag tag;
-	read(fd,&tag,sizeof(CFtag));
+	read(fd,&tag,sizeof(CFTag));
 	char count =tag.collision;
 	if(count==0)
 		return -1;//not exist
 recfree:
 	if(tag.free==0)
 	{
-		offset+=hfh.reclen+sizeof(CFtag);
+		offset+=hfh.reclen+sizeof(CFTag);
 		if(lseek(fd,offset,SEEK_SET)==-1)
 			return-1;
 		read(fd,&tag,sizeof(CFTag));
@@ -152,7 +152,7 @@ recfree:
 			p2++;
 			j++;
 		}
-		if(j==leylen)
+		if(j==keylen)
 		{
 			free(p);
 			p=NULL;
@@ -190,7 +190,7 @@ int hashfile_saverec(int fd,int keyoffset,int keylen ,void *buf)
 	HashFileHeader hfh;
 	readHashFileHeader(fd,&hfh);
 	int addr=hash(keyoffset,keylen,buf,hfh.total_rec_num);
-	int offset=sizeof(HashFileHeader) +addr*(hfh.reclen+sizeof(CFtag));
+	int offset=sizeof(HashFileHeader) +addr*(hfh.reclen+sizeof(CFTag));
 	if(lseek(fd,offset,SEEK_SET)==-1)
 		return -1;
 	CFTag tag;
@@ -214,7 +214,7 @@ int hashfile_saverec(int fd,int keyoffset,int keylen ,void *buf)
 	hfh.current_rec_num++;
 	lseek(fd,0,SEEK_SET);
 	return write(fd,&hfh,sizeof(HashFileHeader));// save record;
-	
+
 }
 
 int hash(int keyoffset,int keylen,void *buf,int total_rec_num)

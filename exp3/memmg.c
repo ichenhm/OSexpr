@@ -90,7 +90,7 @@ void mfree(Map *mp,int aa,int size)
 	register int t;
 	register int a;
 	a=aa;
-	for(bp=mp;bp->m_addr <= a && bp->m_size!=0;bp++)
+	for(bp=mp;bp->m_addr <= a && bp->m_size!=0;bp++);
 	if(bp>mp&&(bp-1)->m_addr+(bp-1)->m_size==a)
 	{//merge before
 		(bp-1)->m_size+=size;
@@ -160,8 +160,9 @@ int main()
 	char c;
 	char chrs[10];
 	init();
-	printf("Please input ,b for BF, w for WF");
+	printf("Please input ,b for BF, w for WF: ");
 	scanf("%s",chrs);
+	c=chrs[0];
 	do
 	{
 		show_map();

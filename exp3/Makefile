@@ -1,3 +1,3 @@
-a.out:memmg.c
-	gcc memmg.c -o a.out
+run:memmg.c
+	gcc memmg.c -o run
 
